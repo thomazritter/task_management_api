@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  express-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: express-api
+    ports:
+      - 3001:3001
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: ds
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
