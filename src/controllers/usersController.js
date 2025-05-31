@@ -7,8 +7,8 @@ export default class UsersController {
       const user = await User.create({ name, email, password });
       res.status(201).json({ data: user });
     } catch (error) {
-      console.error('Error creating user:', error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('User creation error:', error.message);
+      res.status(500).json({ error: 'Failed to create user' });
     }
   };
 
@@ -21,8 +21,8 @@ export default class UsersController {
       }
       res.status(200).json({ data: user });
     } catch (error) {
-      console.error('Error fetching user:', error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Fetching user error:', error.message);
+      res.status(500).json({ error: 'Failed to fetch user' });
     }
   };
 
@@ -37,8 +37,8 @@ export default class UsersController {
       await user.update({ name, email });
       res.status(200).json({ data: user });
     } catch (error) {
-      console.error('Error updating user:', error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Updating user error:', error.message);
+      res.status(500).json({ error: 'Failed to update user' });
     }
   };
 
@@ -52,8 +52,8 @@ export default class UsersController {
       await user.destroy();
       res.status(200).json({ message: 'User deleted successfully', data: user });
     } catch (error) {
-      console.error('Error deleting user:', error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Deleting user error:', error.message);
+      res.status(500).json({ error: 'Failed to delete user' });
     }
   };
 }

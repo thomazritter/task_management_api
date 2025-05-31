@@ -4,7 +4,7 @@ import express from 'express';
 import Router from './routes/router.js';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './swagger.json' assert { type: 'json' };
+import swaggerDocument from './swagger.json';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`Task Management API is listening on port ${port}`);
+  console.log(`Task Management API is running on port ${port}`);
 });
 
 export default app;

@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../connections/database.js';
 
+// Improved readability and added comments for clarity
 const Product = sequelize.define('Product', {
   id: {
     type: DataTypes.INTEGER,

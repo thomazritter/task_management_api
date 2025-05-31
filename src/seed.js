@@ -16,7 +16,7 @@ const retryConnection = async (maxRetries = 5, delay = 2000) => {
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
-  throw new Error('Unable to connect to the database after multiple retries');
+  throw new Error('Failed to connect to the database after multiple retries');
 };
 
 const seedDatabase = async () => {
@@ -24,19 +24,16 @@ const seedDatabase = async () => {
     await retryConnection();
     await sequelize.sync({ force: true });
 
-    // Seed Users
     const users = await User.bulkCreate([
       { name: 'John Doe', email: 'john.doe@example.com', password: 'password123' },
       { name: 'Jane Smith', email: 'jane.smith@example.com', password: 'password456' },
     ]);
 
-    // Seed Tasks
-    const tasks = await Task.bulkCreate([
+    await Task.bulkCreate([
       { title: 'Task 1', description: 'Description for Task 1', assignedTo: users[0].id, status: 'pending' },
       { title: 'Task 2', description: 'Description for Task 2', assignedTo: users[1].id, status: 'completed' },
     ]);
 
-    // Seed Products
     await Product.bulkCreate([
       { name: 'Product 1', price: 10.0, description: 'Description 1', material: 'Material 1', categoryId: 1 },
       { name: 'Product 2', price: 20.0, description: 'Description 2', material: 'Material 2', categoryId: 2 },
@@ -44,7 +41,7 @@ const seedDatabase = async () => {
 
     console.log('Database seeded successfully');
   } catch (error) {
-    console.error('Error seeding database:', error.message);
+    console.error('Seeding error:', error.message);
   } finally {
     await sequelize.close();
   }

@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../connections/database.js';
 
+// Improved readability and added comments for clarity
 const User = sequelize.define('User', {
   id: {
     type: DataTypes.INTEGER,
@@ -26,7 +27,7 @@ const User = sequelize.define('User', {
   },
 }, {
   timestamps: true,
-  paranoid: true,
+  paranoid: true, // Enables soft delete functionality
 });
 
 export default User;

@@ -34,7 +34,7 @@ export default class Router {
     router.get('/products/:id', ProductsController.getProductById)
     router.get('/products/category/:id', ProductsController.getProductByCategory)
     router.post('/products', ProductsController.createProduct)
-    router.delete('/products/:myId', ProductsController.createProduct)
+    router.delete('/products/:id', ProductsController.deleteProductById)
 
     return router
   }

@@ -7,9 +7,8 @@ export default class TasksController {
       const task = await Task.create({ title, description, assignedTo, status });
       res.status(201).json({ data: task });
     } catch (error) {
-      console.error('Error creating task:', error.message);
-      console.log('Error creating task:', error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Task creation error:', error.message);
+      res.status(500).json({ error: 'Failed to create task' });
     }
   };
 
@@ -22,9 +21,8 @@ export default class TasksController {
       }
       res.status(200).json({ data: task });
     } catch (error) {
-      console.error('Error fetching task:', error.message);
-      console.log('Error fetching task:', error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Fetching task error:', error.message);
+      res.status(500).json({ error: 'Failed to fetch task' });
     }
   };
 
@@ -34,8 +32,8 @@ export default class TasksController {
       const tasks = await Task.findAll({ where: { assignedTo } });
       res.status(200).json({ data: tasks });
     } catch (error) {
-      console.error('Error fetching tasks:', error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Fetching tasks error:', error.message);
+      res.status(500).json({ error: 'Failed to fetch tasks' });
     }
   };
 
@@ -50,9 +48,8 @@ export default class TasksController {
       await task.update({ title, description, status });
       res.status(200).json({ data: task });
     } catch (error) {
-      console.error('Error updating task:', error.message);
-      console.log('Error updating task:', error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Updating task error:', error.message);
+      res.status(500).json({ error: 'Failed to update task' });
     }
   };
 
@@ -66,9 +63,8 @@ export default class TasksController {
       await task.destroy();
       res.status(200).json({ message: 'Task deleted successfully', data: task });
     } catch (error) {
-      console.error('Error deleting task:', error.message);
-      console.log('Error deleting task:', error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Deleting task error:', error.message);
+      res.status(500).json({ error: 'Failed to delete task' });
     }
   };
 }
