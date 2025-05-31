@@ -4,7 +4,7 @@ import express from 'express';
 import Router from './routes/router.js';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './swagger.json';
+import swaggerDocument from './swagger.json' assert { type: 'json' };
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
