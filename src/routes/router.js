@@ -6,7 +6,7 @@ import AuthController from '../controllers/authController.js'
 
 export default class Router {
   static getRouter() {
-    const router = express.Router().all('/api')
+    const router = express.Router()
 
     // Health check
     router.get('/health', (req, res) => res.status(200).json({ status: 'API is running' }))

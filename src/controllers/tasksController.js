@@ -8,6 +8,7 @@ export default class TasksController {
       res.status(201).json({ data: task });
     } catch (error) {
       console.error('Error creating task:', error.message);
+      console.log('Error creating task:', error.message);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -22,6 +23,7 @@ export default class TasksController {
       res.status(200).json({ data: task });
     } catch (error) {
       console.error('Error fetching task:', error.message);
+      console.log('Error fetching task:', error.message);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -49,6 +51,7 @@ export default class TasksController {
       res.status(200).json({ data: task });
     } catch (error) {
       console.error('Error updating task:', error.message);
+      console.log('Error updating task:', error.message);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -64,6 +67,7 @@ export default class TasksController {
       res.status(200).json({ message: 'Task deleted successfully', data: task });
     } catch (error) {
       console.error('Error deleting task:', error.message);
+      console.log('Error deleting task:', error.message);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
