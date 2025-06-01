@@ -4,7 +4,7 @@ Hey there! 👋 Welcome to the Task Management API project. This is a collaborat
 
 ---
 
-## 🚀 Features
+## Features
 - User management (create, read, update, delete)
 - Task management (create, read, update, delete, assign to users)
 - Authentication endpoints (login/logout)
@@ -16,7 +16,7 @@ Hey there! 👋 Welcome to the Task Management API project. This is a collaborat
 
 ---
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18+ recommended)
@@ -55,7 +55,7 @@ npm test
 
 ---
 
-## 🧑‍💻 API Endpoints
+## API Endpoints
 
 ### Health Check
 - `GET /api/health` – Check if the API is running
@@ -82,7 +82,7 @@ npm test
 
 ---
 
-## 🐞 Sentry Error Tracking
+## Sentry Error Tracking
 - Sentry is initialized in `src/sentry.js`.
 - You can import and use it anywhere:
   ```js
@@ -93,29 +93,18 @@ npm test
 
 ---
 
-## 🧪 Testing
+## Testing
 - Tests are in `src/tests/app.test.js` using Jest and Supertest.
 - Run with `npm test`.
 
 ---
 
-## 🐳 Docker
+## Docker
 - The project is fully dockerized. See `docker-compose.yaml` and `Dockerfile`.
 - Database data is persisted in a Docker volume.
 
 ---
 
-## 📝 Notes
-- No product endpoints/models/controllers are present (ignore any old references).
-- If you want to seed the database, see `src/seed.js`.
+## Notes
+- If you want to seed the database, see `src/seed.js` — it automatically runs when getting the app up.
 - For any issues, check the logs in `src/app.log` or your Sentry dashboard.
-
----
-
-## 🙌 Contributing
-PRs are welcome! If you have questions or want to suggest improvements, just open an issue or reach out.
-
----
-
-## 📄 License
-MIT
