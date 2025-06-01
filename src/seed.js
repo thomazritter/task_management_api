@@ -1,6 +1,5 @@
 import User from './models/user.js';
 import Task from './models/task.js';
-import Product from './models/product.js';
 import sequelize from './connections/database.js';
 
 const retryConnection = async (maxRetries = 5, delay = 2000) => {
@@ -32,11 +31,6 @@ const seedDatabase = async () => {
     await Task.bulkCreate([
       { title: 'Task 1', description: 'Description for Task 1', assignedTo: users[0].id, status: 'pending' },
       { title: 'Task 2', description: 'Description for Task 2', assignedTo: users[1].id, status: 'completed' },
-    ]);
-
-    await Product.bulkCreate([
-      { name: 'Product 1', price: 10.0, description: 'Description 1', material: 'Material 1', categoryId: 1 },
-      { name: 'Product 2', price: 20.0, description: 'Description 2', material: 'Material 2', categoryId: 2 },
     ]);
 
     console.log('Database seeded successfully');

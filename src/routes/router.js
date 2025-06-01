@@ -1,8 +1,8 @@
 import express from 'express'
-import ProductsController from '../controllers/productsController.js'
 import UsersController from '../controllers/usersController.js'
 import TasksController from '../controllers/tasksController.js'
 import AuthController from '../controllers/authController.js'
+import sentry from '../sentry.js'
 
 export default class Router {
   static getRouter() {
@@ -10,6 +10,10 @@ export default class Router {
 
     // Health check
     router.get('/health', (req, res) => res.status(200).json({ status: 'API is running' }))
+    router.get('/error', (req, res) => { 
+      sentry.captureException(new Error('Someone tried to access an error endpoint'), { extra: req.body })
+      res.status(500).json({ error: 'This is a test error endpoint' })
+    });
 
     // Users endpoints
     router.post('/users', UsersController.createUser)
@@ -27,14 +31,6 @@ export default class Router {
     // Authentication endpoints
     router.post('/auth/login', AuthController.login)
     router.post('/auth/logout', AuthController.logout)
-
-    // Products endpoints
-    router.get('/products/seedDatabase', ProductsController.seed)
-    router.get('/products', ProductsController.getProducts)
-    router.get('/products/:id', ProductsController.getProductById)
-    router.get('/products/category/:id', ProductsController.getProductByCategory)
-    router.post('/products', ProductsController.createProduct)
-    router.delete('/products/:id', ProductsController.deleteProductById)
 
     return router
   }

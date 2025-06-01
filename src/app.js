@@ -1,3 +1,4 @@
+import Sentry from './sentry.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -18,11 +19,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const logStream = fs.createWriteStream(path.join(__dirname, 'app.log'), { flags: 'a' });
 
+// Use correct Sentry handler references for ESM
+app.use(Sentry.defaultHandlers?.requestHandler?.() || Sentry.Handlers?.requestHandler?.() || ((req, res, next) => next()));
+app.use(Sentry.defaultHandlers?.tracingHandler?.() || Sentry.Handlers?.tracingHandler?.() || ((req, res, next) => next()));
+
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 app.use('/api', Router.getRouter());
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use((req, res, next) => {
   const logMessage = `${new Date().toISOString()} - ${req.method} ${req.url}`;
   console.log(logMessage);
@@ -30,8 +35,19 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(port, () => {
-  console.log(`Task Management API is running on port ${port}`);
+app.get("/debug-sentry", function mainHandler(req, res) {
+  throw new Error("My first Sentry error!");
 });
+
+// Sentry error handler must be after all routes/middleware
+app.use(Sentry.defaultHandlers?.errorHandler?.() || Sentry.Handlers?.errorHandler?.() || ((err, req, res, next) => next(err)));
+
+// Optional: fallback error handler for user-friendly messages
+app.use((err, req, res, next) => {
+  res.statusCode = 500;
+  res.end(res.sentry ? `Sentry Error ID: ${res.sentry}` : "Internal server error");
+});
+
+// Removed app.listen from app.js to avoid EADDRINUSE during tests
 
 export default app;
