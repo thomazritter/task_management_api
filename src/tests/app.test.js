@@ -1,180 +1,158 @@
-import supertest from "supertest";
-import app from "../app.js";
+import supertest from 'supertest';
+import app from '../app.js';
 
-describe("Health Check Endpoint", () => {
-  it("should return API is running", async () => {
-    const res = await supertest(app).get("/api/health");
+describe('Health Check Endpoint', () => {
+  it('should return API is running', async () => {
+    const res = await supertest(app).get('/api/health');
     expect(res.status).toBe(200);
-    expect(res.body.status).toBe("API is running");
+    expect(res.body.status).toBe('API is running');
   });
 });
 
-describe("User Endpoints", () => {
+describe('User Endpoints', () => {
   let testUser;
+  let token;
 
-  it("should create a user", async () => {
+  it('should create a user', async () => {
     const res = await supertest(app)
-      .post("/api/users")
-      .send({ name: "Test User", email: `testuser_${Date.now()}@example.com`, password: "testpass" });
+      .post('/api/users')
+      .send({
+        name: 'Test User',
+        email: `testuser_${Date.now()}@example.com`,
+        password: 'testpass',
+      });
     expect(res.status).toBe(201);
-    expect(res.body.data.email).toContain("testuser_");
+    expect(res.body.data.email).toContain('testuser_');
     testUser = res.body.data;
   });
 
-  it("should get the created user by id", async () => {
-    // Create user first
-    const createRes = await supertest(app)
-      .post("/api/users")
-      .send({ name: "Test User", email: `testuser_${Date.now()}@example.com`, password: "testpass" });
-    const user = createRes.body.data;
-    const res = await supertest(app).get(`/api/users/${user.id}`);
-    expect(res.status).toBe(200);
-    expect(res.body.data.email).toBe(user.email);
-    // Clean up
-    await supertest(app).delete(`/api/users/${user.id}`);
-  });
-
-  it("should update the user", async () => {
-    // Create user first
-    const createRes = await supertest(app)
-      .post("/api/users")
-      .send({ name: "Test User", email: `testuser_${Date.now()}@example.com`, password: "testpass" });
-    const user = createRes.body.data;
+  it('should login and get a JWT token', async () => {
     const res = await supertest(app)
-      .put(`/api/users/${user.id}`)
-      .send({ name: "Updated User", email: user.email });
+      .post('/api/auth/login')
+      .send({ email: testUser.email, password: 'testpass' });
     expect(res.status).toBe(200);
-    expect(res.body.data.name).toBe("Updated User");
-    // Clean up
-    await supertest(app).delete(`/api/users/${user.id}`);
+    expect(res.body.token).toBeDefined();
+    token = res.body.token;
   });
 
-  it("should delete the user", async () => {
-    // Create user first
-    const createRes = await supertest(app)
-      .post("/api/users")
-      .send({ name: "Test User", email: `testuser_${Date.now()}@example.com`, password: "testpass" });
-    const user = createRes.body.data;
-    const res = await supertest(app).delete(`/api/users/${user.id}`);
+  it('should get the created user by id', async () => {
+    const res = await supertest(app)
+      .get(`/api/users/${testUser.id}`)
+      .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body.message).toBe("User deleted successfully");
+    expect(res.body.data.email).toBe(testUser.email);
+  });
+
+  it('should update the user', async () => {
+    const res = await supertest(app)
+      .put(`/api/users/${testUser.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'Updated User', email: testUser.email });
+    expect(res.status).toBe(200);
+    expect(res.body.data.name).toBe('Updated User');
+  });
+
+  it('should delete the user', async () => {
+    const res = await supertest(app)
+      .delete(`/api/users/${testUser.id}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe('User deleted successfully');
   });
 });
 
-describe("Task Endpoints", () => {
-  it("should create a new task", async () => {
-    // Create user first
+describe('Task Endpoints', () => {
+  let user;
+  let token;
+  let task;
+
+  beforeAll(async () => {
+    // Create and login a user for task tests
     const userRes = await supertest(app)
-      .post("/api/users")
-      .send({ name: "Task User", email: `taskuser_${Date.now()}@example.com`, password: "testpass" });
-    const user = userRes.body.data;
-    const res = await supertest(app)
-      .post("/api/tasks")
+      .post('/api/users')
       .send({
-        title: "Test Task",
-        description: "A task for testing",
+        name: 'Task User',
+        email: `taskuser_${Date.now()}@example.com`,
+        password: 'testpass',
+      });
+    user = userRes.body.data;
+    const loginRes = await supertest(app)
+      .post('/api/auth/login')
+      .send({ email: user.email, password: 'testpass' });
+    token = loginRes.body.token;
+  });
+
+  afterAll(async () => {
+    // Clean up user
+    await supertest(app).delete(`/api/users/${user.id}`).set('Authorization', `Bearer ${token}`);
+  });
+
+  it('should create a new task', async () => {
+    const res = await supertest(app)
+      .post('/api/tasks')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: 'Test Task',
+        description: 'A task for testing',
         assignedTo: user.id,
-        status: "pending"
+        status: 'pending',
       });
     expect(res.status).toBe(201);
-    expect(res.body.data.title).toBe("Test Task");
-    // Clean up
-    await supertest(app).delete(`/api/tasks/${res.body.data.id}`);
-    await supertest(app).delete(`/api/users/${user.id}`);
+    expect(res.body.data.title).toBe('Test Task');
+    task = res.body.data;
   });
 
-  it("should get the created task by id", async () => {
-    // Create user and task first
-    const userRes = await supertest(app)
-      .post("/api/users")
-      .send({ name: "Task User", email: `taskuser_${Date.now()}@example.com`, password: "testpass" });
-    const user = userRes.body.data;
-    const taskRes = await supertest(app)
-      .post("/api/tasks")
-      .send({
-        title: "Test Task",
-        description: "A task for testing",
-        assignedTo: user.id,
-        status: "pending"
-      });
-    const task = taskRes.body.data;
-    const res = await supertest(app).get(`/api/tasks/${task.id}`);
+  it('should get the created task by id', async () => {
+    const res = await supertest(app)
+      .get(`/api/tasks/${task.id}`)
+      .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body.data.title).toBe("Test Task");
-    // Clean up
-    await supertest(app).delete(`/api/tasks/${task.id}`);
-    await supertest(app).delete(`/api/users/${user.id}`);
+    expect(res.body.data.title).toBe('Test Task');
   });
 
-  it("should update the task", async () => {
-    // Create user and task first
-    const userRes = await supertest(app)
-      .post("/api/users")
-      .send({ name: "Task User", email: `taskuser_${Date.now()}@example.com`, password: "testpass" });
-    const user = userRes.body.data;
-    const taskRes = await supertest(app)
-      .post("/api/tasks")
-      .send({
-        title: "Test Task",
-        description: "A task for testing",
-        assignedTo: user.id,
-        status: "pending"
-      });
-    const task = taskRes.body.data;
+  it('should update the task', async () => {
     const res = await supertest(app)
       .put(`/api/tasks/${task.id}`)
-      .send({ title: "Updated Task", description: "Updated desc", status: "completed" });
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'Updated Task', description: 'Updated desc', status: 'completed' });
     expect(res.status).toBe(200);
-    expect(res.body.data.title).toBe("Updated Task");
-    expect(res.body.data.status).toBe("completed");
-    // Clean up
-    await supertest(app).delete(`/api/tasks/${task.id}`);
-    await supertest(app).delete(`/api/users/${user.id}`);
+    expect(res.body.data.title).toBe('Updated Task');
+    expect(res.body.data.status).toBe('completed');
   });
 
-  it("should get tasks by user", async () => {
-    // Create user and task first
-    const userRes = await supertest(app)
-      .post("/api/users")
-      .send({ name: "Task User", email: `taskuser_${Date.now()}@example.com`, password: "testpass" });
-    const user = userRes.body.data;
-    const taskRes = await supertest(app)
-      .post("/api/tasks")
-      .send({
-        title: "Test Task",
-        description: "A task for testing",
-        assignedTo: user.id,
-        status: "pending"
-      });
-    const task = taskRes.body.data;
-    const res = await supertest(app).get(`/api/tasks?assignedTo=${user.id}`);
+  it('should get tasks by user', async () => {
+    const res = await supertest(app)
+      .get(`/api/tasks?assignedTo=${user.id}`)
+      .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body.data)).toBe(true);
-    expect(res.body.data.some(t => t.id === task.id)).toBe(true);
-    // Clean up
-    await supertest(app).delete(`/api/tasks/${task.id}`);
-    await supertest(app).delete(`/api/users/${user.id}`);
+    expect(res.body.data.some((t) => t.id === task.id)).toBe(true);
   });
 
-  it("should delete the task", async () => {
-    // Create user and task first
-    const userRes = await supertest(app)
-      .post("/api/users")
-      .send({ name: "Task User", email: `taskuser_${Date.now()}@example.com`, password: "testpass" });
-    const user = userRes.body.data;
-    const taskRes = await supertest(app)
-      .post("/api/tasks")
-      .send({
-        title: "Test Task",
-        description: "A task for testing",
-        assignedTo: user.id,
-        status: "pending"
-      });
-    const task = taskRes.body.data;
-    const res = await supertest(app).delete(`/api/tasks/${task.id}`);
+  it('should delete the task', async () => {
+    const res = await supertest(app)
+      .delete(`/api/tasks/${task.id}`)
+      .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body.message).toBe("Task deleted successfully");
-    // Clean up user
-    await supertest(app).delete(`/api/users/${user.id}`);
+    expect(res.body.message).toBe('Task deleted successfully');
   });
 });
+!(function () {
+  try {
+    var e =
+        'undefined' != typeof window
+          ? window
+          : 'undefined' != typeof global
+            ? global
+            : 'undefined' != typeof globalThis
+              ? globalThis
+              : 'undefined' != typeof self
+                ? self
+                : {},
+      n = new e.Error().stack;
+    n &&
+      ((e._sentryDebugIds = e._sentryDebugIds || {}),
+      (e._sentryDebugIds[n] = '58d84b13-9509-5c4b-9105-3dc0582c1a85'));
+  } catch (e) {}
+})();
+//# debugId=58d84b13-9509-5c4b-9105-3dc0582c1a85

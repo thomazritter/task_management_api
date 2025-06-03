@@ -7,4 +7,4 @@ RUN chown -R node:node /usr/src/app
 EXPOSE 3001
 USER node
 # Run the seed script and then start the application server
-CMD ["sh", "-c", "node src/seed.js && node src/server.js"]
+CMD ["sh", "-c", "node src/server.js"]

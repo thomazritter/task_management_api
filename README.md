@@ -102,9 +102,3 @@ npm test
 ## Docker
 - The project is fully dockerized. See `docker-compose.yaml` and `Dockerfile`.
 - Database data is persisted in a Docker volume.
-
----
-
-## Notes
-- If you want to seed the database, see `src/seed.js` — it automatically runs when getting the app up.
-- For any issues, check the logs in `src/app.log` or your Sentry dashboard.
