@@ -7,7 +7,7 @@ Hey there! 👋 Welcome to the Task Management API project. This is a collaborat
 ## Features
 - User management (create, read, update, delete)
 - Task management (create, read, update, delete, assign to users)
-- Authentication endpoints (login/logout)
+- Authentication JWT (login/logout)
 - Health check and error test endpoints
 - Sentry error tracking (use `sentry.captureException` anywhere)
 - Swagger UI for API documentation
@@ -31,12 +31,13 @@ cd task_management_api
 ### 2. Environment Variables
 Create a `.env` file in the root with your DB and Sentry config:
 ```
-DB_NAME=ds
+SERVER_PORT=3001
 DB_USER=myuser
 DB_PASSWORD=mypassword
-DB_HOST=postgres
-JWT_SECRET=your_jwt_secret
-SERVER_PORT=3001
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_NAME=ds
+JWT_SECRET=mysecretkey
 ```
 
 ### 3. Start Everything (API + DB)
