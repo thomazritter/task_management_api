@@ -90,7 +90,9 @@ npm test
   import Sentry from './sentry.js';
   Sentry.captureException(new Error('Something went wrong!'));
   ```
-- All unhandled errors are automatically reported.
+- All unhandled errors are automatically reported to my personal Sentry account - which is now on trial mode. Unfortunately, you won't be able to see how it looks, but here is a sneak peak:
+  <img width="1508" alt="image" src="https://github.com/user-attachments/assets/540db9e7-daa2-4160-845c-778f58525200" />
+
 
 ---
 
