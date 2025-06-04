@@ -112,4 +112,6 @@ npm test
 
 ![WhatsApp Image 2025-06-04 at 13 44 11](https://github.com/user-attachments/assets/725e343c-49fa-481c-9cdf-4462eaa20591)
 
+## Presentation
 
+https://docs.google.com/presentation/d/1Cws0yUxHFwONqR15bM7MeyR2KCAXFpMHx22tYW4O38M/edit?usp=sharing
