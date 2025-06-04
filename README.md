@@ -110,5 +110,6 @@ npm test
 
 ## UML
 
-![IMG_7803](https://github.com/user-attachments/assets/f7553691-9cc8-4d31-9986-5c90923db941)
+![WhatsApp Image 2025-06-04 at 13 44 11](https://github.com/user-attachments/assets/725e343c-49fa-481c-9cdf-4462eaa20591)
+
 
