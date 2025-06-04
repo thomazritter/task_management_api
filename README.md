@@ -105,3 +105,10 @@ npm test
 ## Docker
 - The project is fully dockerized. See `docker-compose.yaml` and `Dockerfile`.
 - Database data is persisted in a Docker volume.
+
+---
+
+## UML
+
+![IMG_7803](https://github.com/user-attachments/assets/f7553691-9cc8-4d31-9986-5c90923db941)
+
