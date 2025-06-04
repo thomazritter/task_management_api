@@ -8,22 +8,3 @@ Sentry.init({
 });
 
 export default Sentry;
-!(function () {
-  try {
-    var e =
-        'undefined' != typeof window
-          ? window
-          : 'undefined' != typeof global
-            ? global
-            : 'undefined' != typeof globalThis
-              ? globalThis
-              : 'undefined' != typeof self
-                ? self
-                : {},
-      n = new e.Error().stack;
-    n &&
-      ((e._sentryDebugIds = e._sentryDebugIds || {}),
-      (e._sentryDebugIds[n] = '21fd99f7-5e61-564a-b598-fd69ff1f7c85'));
-  } catch (e) {}
-})();
-//# debugId=21fd99f7-5e61-564a-b598-fd69ff1f7c85

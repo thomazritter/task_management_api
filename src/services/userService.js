@@ -9,50 +9,30 @@ export default class UserService {
   }
 
   static async getUserById(id) {
-    // Only return users that are not soft-deleted
     return User.findOne({ where: { id, deletedAt: null } });
   }
 
   static async updateUser(id, { name, email }) {
-    // Only update if not soft-deleted
     const user = await User.findOne({ where: { id, deletedAt: null } });
     if (!user) return null;
-    await user.update({ name, email });
+    // Only update fields if provided
+    if (name !== undefined) user.name = name;
+    if (email !== undefined) user.email = email;
+    await user.save();
     return user;
   }
 
   static async deleteUser(id) {
-    // Set deletedAt timestamp instead of using destroy/paranoid
     const user = await User.findOne({ where: { id, deletedAt: null } });
     if (!user) return null;
     await user.update({ deletedAt: new Date() });
-    return user;
+    return await User.findOne({ where: { id } });
   }
 
   static async restoreUser(id) {
-    // Restore by setting deletedAt to null
     const user = await User.findOne({ where: { id, deletedAt: { [Op.not]: null } } });
     if (!user) return null;
     await user.update({ deletedAt: null });
-    return user;
+    return await User.findOne({ where: { id } });
   }
 }
-!(function () {
-  try {
-    var e =
-        'undefined' != typeof window
-          ? window
-          : 'undefined' != typeof global
-            ? global
-            : 'undefined' != typeof globalThis
-              ? globalThis
-              : 'undefined' != typeof self
-                ? self
-                : {},
-      n = new e.Error().stack;
-    n &&
-      ((e._sentryDebugIds = e._sentryDebugIds || {}),
-      (e._sentryDebugIds[n] = 'd05adfef-5819-5850-a946-b0f1fd787f7d'));
-  } catch (e) {}
-})();
-//# debugId=d05adfef-5819-5850-a946-b0f1fd787f7d

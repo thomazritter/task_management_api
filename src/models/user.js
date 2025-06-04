@@ -29,8 +29,7 @@ const User = sequelize.define(
     },
   },
   {
-    timestamps: true,
-    paranoid: true, // Enables soft delete functionality
+    timestamps: true, // Keep track of record creation and update times
   }
 );
 

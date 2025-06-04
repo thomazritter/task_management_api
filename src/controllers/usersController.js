@@ -8,7 +8,6 @@ export default class UsersController {
       const user = await UserService.createUser({ name, email, password });
       res.status(201).json({ data: user });
     } catch (error) {
-      console.error('User creation error:', error.message);
       res.status(500).json({ error: 'Failed to create user' });
     }
   };
@@ -24,7 +23,6 @@ export default class UsersController {
         }
         res.status(200).json({ data: user });
       } catch (error) {
-        console.error('Fetching user error:', error.message);
         res.status(500).json({ error: 'Failed to fetch user' });
       }
     },
@@ -42,7 +40,6 @@ export default class UsersController {
         }
         res.status(200).json({ data: user });
       } catch (error) {
-        console.error('Updating user error:', error.message);
         res.status(500).json({ error: 'Failed to update user' });
       }
     },
@@ -59,7 +56,6 @@ export default class UsersController {
         }
         res.status(200).json({ message: 'User deleted successfully', data: user });
       } catch (error) {
-        console.error('Deleting user error:', error.message);
         res.status(500).json({ error: 'Failed to delete user' });
       }
     },
