@@ -5,11 +5,12 @@ import express from 'express';
 import Router from './routes/router.js';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
-import swaggerJSDoc from 'swagger-jsdoc';
+import yaml from 'yamljs';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import sequelize from './connections/database.js';
 
 dotenv.config();
 
@@ -36,20 +37,8 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use('/api', Router.getRouter());
 
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Task Management API',
-      version: '1.0.0',
-      description: 'API for collaborative task management.',
-    },
-  },
-  apis: ['./src/controllers/*.js', './src/routes/*.js'], // JSDoc comments in these files
-};
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+const swaggerDocument = yaml.load(path.join(__dirname, 'swagger.yaml'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use((req, res, next) => {
   const logMessage = `${new Date().toISOString()} - ${req.method} ${req.url}`;
   console.log(logMessage);
@@ -60,6 +49,8 @@ app.use((req, res, next) => {
 app.get('/debug-sentry', function mainHandler(req, res) {
   throw new Error('My first Sentry error!');
 });
+
+await sequelize.sync();
 
 // Sentry error handler must be after all routes/middleware
 app.use(
@@ -74,25 +65,4 @@ app.use((err, req, res, next) => {
   res.end(res.sentry ? `Sentry Error ID: ${res.sentry}` : 'Internal server error');
 });
 
-// Removed app.listen from app.js to avoid EADDRINUSE during tests
-
 export default app;
-!(function () {
-  try {
-    var e =
-        'undefined' != typeof window
-          ? window
-          : 'undefined' != typeof global
-            ? global
-            : 'undefined' != typeof globalThis
-              ? globalThis
-              : 'undefined' != typeof self
-                ? self
-                : {},
-      n = new e.Error().stack;
-    n &&
-      ((e._sentryDebugIds = e._sentryDebugIds || {}),
-      (e._sentryDebugIds[n] = 'c56dfbd8-c070-5d66-acb4-8b7c88b6024f'));
-  } catch (e) {}
-})();
-//# debugId=c56dfbd8-c070-5d66-acb4-8b7c88b6024f
